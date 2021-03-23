@@ -304,13 +304,18 @@ h2 {
     .nav .navbar-brand {
         display: none;
     }
-    .nav .navbar-dark a.nav-link {
+    .nav .navbar-dark a.nav-link,
+    .nav .navbar-dark span.nav-link {
+        //--see span
         color: #ffffff;
         font-size: 14px;
         text-transform: uppercase;
     }
     .nav .navbar-dark a.nav-link:hover,
-    .nav .navbar-dark a.nav-link.active {
+    .nav .navbar-dark a.nav-link.active,
+    .nav .navbar-dark span.nav-link:hover,
+    .nav .navbar-dark span.nav-link.active {
+        //--see span
         color: #000000;
     }
 }
@@ -2531,4 +2536,33 @@ h2 {
     .footer-bottom .template-by {
         text-align: center;
     }
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+//--Custom css
+//--see
+.showBlock {
+    display: block;
+}
+
+.showNone {
+    display: none;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.error {
+    color: #FF6F61;
 }

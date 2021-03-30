@@ -61,9 +61,9 @@ export class LoginComponent implements OnInit {
     console.log('register');
     if (!this.registerForm.invalid && this.isPassMatch) { //--Checks form input validity and Password match
 
-      const data = await this.userService.register(this.registerForm.value);
-      console.log('data-register-', data);
-      if(data && !data.error){
+      const res = await this.userService.register(this.registerForm.value);
+      console.log('res-', res);
+      if(res.status === 200){
         //-- success
         this.registerForm.reset();
         let _html=`
@@ -77,7 +77,7 @@ export class LoginComponent implements OnInit {
       }else{
         //-- Fail
         this.customError.status = true;
-        this.customError.message = data.message;
+        this.customError.message = res.data.message;
         console.log('this.customError--', this.customError);
       }
     } else {
@@ -91,15 +91,11 @@ export class LoginComponent implements OnInit {
     console.log('userLogin');
     if (!this.loginForm.invalid) { //--Checks form input validity
         //--Form input is valid
-        const data = await this.userService.userLogin(this.loginForm.value);
-        console.log('data-login-', data);
-        if(data && !data.error){
+        const res = await this.userService.userLogin(this.loginForm.value);
+        console.log('rescc-', res);
+        if(res.status === 200){
           //-- success
-          sessionStorage.setItem("user-data", JSON.stringify(data.data));
-          let user = JSON.parse(sessionStorage.getItem("user-data"));
-          // console.log('user-login-', user);
-          // alert('Register Success! \n Please login');
-
+          sessionStorage.setItem("user-data", JSON.stringify(res.data.data));
           let _html=`
                   <div class="c-green">
                     <div class="material-icons">task_alt</div>
@@ -112,7 +108,7 @@ export class LoginComponent implements OnInit {
         }else{
           //-- Fail
           this.customError2.status = true;
-          this.customError2.message = data.message;
+          this.customError2.message = res.data.message;
           console.log('this.customError2--', this.customError2);
         }
     } else {

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from '../share/guard.service';
 import { AdminAdeditComponent } from './admins/admin-adedit/admin-adedit.component';
 import { AdminsComponent } from './admins/admins/admins.component';
 import { BannerAdeditComponent } from './banners/banner-adedit/banner-adedit.component';
@@ -11,28 +12,32 @@ import { ProductAdeditComponent } from './products/product-adedit/product-adedit
 import { ProductsComponent } from './products/products/products.component';
 import { UserAdeditComponent } from './users/user-adedit/user-adedit.component';
 import { UsersComponent } from './users/users/users.component';
-
 const routes: Routes = [
-  { path: '', component: DashboardComponent},
+
+  { path: '',   redirectTo: 'login', pathMatch: 'full' }, // redirect to
   { path: 'login', component: LoginComponent},
 
-  { path: 'admins', component: AdminAdeditComponent },
-  { path: 'admin-adedit/:slug', component: AdminsComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate:[AuthGuard]},
 
-  { path: 'banners', component: BannersComponent },
-  { path: 'banner-adedit/:slug', component: BannerAdeditComponent },
+  { path: 'admins', component: AdminAdeditComponent, canActivate:[AuthGuard] },
+  { path: 'admin-adedit/:slug', component: AdminsComponent, canActivate:[AuthGuard] },
 
-  { path: 'products', component: ProductsComponent },
-  { path: 'product-adedit/:slug', component: ProductAdeditComponent },
+  { path: 'banners', component: BannersComponent, canActivate:[AuthGuard] },
+  { path: 'banner-adedit/:slug', component: BannerAdeditComponent, canActivate:[AuthGuard] },
 
-  { path: 'users', component: UsersComponent },
-  { path: 'user-adedit/:slug', component: UserAdeditComponent },
+  { path: 'products', component: ProductsComponent, canActivate:[AuthGuard] },
+  { path: 'product-adedit', component: ProductAdeditComponent, canActivate:[AuthGuard] },
+  { path: 'product-adedit/:id', component: ProductAdeditComponent, canActivate:[AuthGuard] },
 
-  { path: '**', component: PagenotfoundComponent},
+  { path: 'users', component: UsersComponent, canActivate:[AuthGuard] },
+  { path: 'user-adedit/:slug', component: UserAdeditComponent, canActivate:[AuthGuard] },
+
+  { path: '**', component: PagenotfoundComponent, canActivate:[AuthGuard]},
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers:[AuthGuard],
 })
 export class AdminRoutingModule { }

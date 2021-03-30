@@ -1,1 +1,76 @@
-<p>product-adedit works!</p>
+<app-top-left></app-top-left>
+
+<div class="detail">
+    <form [formGroup]="form" class="mat-elevation-z8" enctype="multipart/form-data">
+
+        <div class="link-nav">
+            <a routerLink="/admin/products">Back</a>
+            <h1>Product</h1>
+            <span *ngIf="!paramId">Create New</span> <span *ngIf="paramId">Edit</span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <label>Product Name</label>
+                <input class="form-control" formControlName="pName">
+                <small class="error" *ngIf="f.pName.invalid && (f.pName.dirty || f.pName.touched)">*Required</small>
+            </div>
+            <div class="col-md-6">
+                <label>Slug</label>
+                <input class="form-control" formControlName="pSlug">
+                <small class="error" *ngIf="f.pSlug.invalid && (f.pSlug.dirty || f.pSlug.touched)">*Required</small>
+            </div>
+            <div class="col-md-6">
+                <label>Qty</label>
+                <input class="form-control" formControlName="pQty">
+                <small class="error" *ngIf="f.pQty.invalid && (f.pQty.dirty || f.pQty.touched)">*Required</small>
+            </div>
+
+            <div class="col-md-6">
+                <label>Price</label>
+                <input class="form-control" formControlName="pPrice">
+                <small class="error" *ngIf="f.pPrice.invalid && (f.pPrice.dirty || f.pPrice.touched)">*Required</small>
+            </div>
+
+            <div class="col-md-6">
+                <label>Price Sale</label>
+                <input class="form-control" formControlName="pPriceSale">
+            </div>
+
+            <div class="col-md-6">
+                <label>Size</label>
+                <input class="form-control" formControlName="pSize">
+                <small class="error" *ngIf="f.pSize.invalid && (f.pSize.dirty || f.pSize.touched)">*Required</small>
+            </div>
+
+            <div class="col-md-6">
+                <label>Color</label>
+                <input class="form-control" formControlName="pColor">
+                <small class="error" *ngIf="f.pColor.invalid && (f.pColor.dirty || f.pColor.touched)">*Required</small>
+            </div>
+
+            <div class="col-md-12">
+                <label>Images</label>
+                <input formControlName="pImages" type="file" name="images" accept="image/*" multiple>
+                <small class="error" *ngIf="f.pImages.invalid && (f.pImages.dirty || f.pImages.touched)">*Required</small>
+            </div>
+
+            <div class="col-md-12">
+                <label>Description</label>
+                <textarea class="form-control" formControlName="pDesc" rows="4"></textarea>
+                <small class="error" *ngIf="f.pDesc.invalid && (f.pDesc.dirty || f.pDesc.touched)">*Required</small>
+            </div>
+
+            <div class="col-md-12">
+                <label>Specification</label>
+                <textarea class="form-control" formControlName="pSpecification" rows="4"></textarea>
+                <small class="error" *ngIf="f.pSpecification.invalid && (f.pSpecification.dirty || f.pSpecification.touched)">*Required</small>
+            </div>
+
+
+            <div class="col-md-12 txt-center">
+                <button class="btn" (click)="submit()" [disabled]="this.form.invalid">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>

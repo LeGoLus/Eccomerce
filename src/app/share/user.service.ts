@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import axios from 'axios';
+// import axios from 'axios';
+import axios from "src/utils/axios"
+
 
 @Injectable({
   providedIn: 'root'
@@ -29,26 +31,57 @@ export class UserService {
     try {
       const res = await axios.post(`${this.apiURL}/api/auth/signup`, payload);
       // console.log('res-', res);
-      return res.data;
+      if(res){
+        return res;
+      }
     } catch (error) {
       console.log(error);
       // console.error(error);
     }
   }
 
-  //--login
+  //--user login
   async userLogin(payload){
     try {
       const res = await axios.post(`${this.apiURL}/api/auth/signin`, payload);
       // console.log('res-', res);
-      return res.data;
+      if(res){
+        return res;
+      }
     } catch (error) {
       console.log(error);
       // console.error(error);
+    }
+  }
+
+  //--Admin login
+  async adminLogin(payload){
+    try {
+      const res = await axios.post(`${this.apiURL}/api/auth/signin`, payload);
+      if(res){
+        return res;
+      }
+    }
+    catch (error) {
+      // console.log(error);
+      console.error(error);
     }
   }
 
   //--update user by id
   //--delete user by id
 
+  getUser(){
+    if(sessionStorage.getItem("user-data")){
+      var user = JSON.parse(sessionStorage.getItem("user-data"));
+    }
+    return user ? user.accessToken : false;
+  }
+
+  getAdmin(){
+    if(sessionStorage.getItem("admin-data")){
+      var admin = JSON.parse(sessionStorage.getItem("admin-data"));
+    }
+    return admin ? admin.accessToken : false;
+  }
 }

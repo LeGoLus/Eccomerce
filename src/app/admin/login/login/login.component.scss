@@ -1,1 +1,19 @@
-@import '../../admin.scss'
+@import '../../admin.scss';
+.top {
+    height: 20vh;
+}
+
+form {
+    background: none;
+}
+
+.login {
+    height: 65vh;
+    .admin-content {
+        height: 65vh;
+    }
+}
+
+.footer {
+    height: 15vh;
+}

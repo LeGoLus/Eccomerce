@@ -4,7 +4,7 @@ import { environment } from '../../../../environments/environment';
 import { UserService } from 'src/app/share/user.service';
 import { Router } from '@angular/router';
 
-import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogComponent } from 'src/app/share/dialog/dialog.component';
 
 @Component({
@@ -36,34 +36,37 @@ export class LoginComponent implements OnInit {
   }
   get flog() { return this.loginForm.controls; }
 
-  async userLogin(){
-    console.log('userLogin');
-    if (!this.loginForm.invalid) { //--Checks form input validity
-        //--Form input is valid
-        const data = await this.userService.userLogin(this.loginForm.value);
-        console.log('data-login-', data);
-        if(data && !data.error){
-          //-- success
-          sessionStorage.setItem("user-data", JSON.stringify(data.data));
-          let user = JSON.parse(sessionStorage.getItem("user-data"));
-          // console.log('user-login-', user);
-          // alert('Register Success! \n Please login');
+  async adminLogin(){
+    console.log('adminLogin');
+    if (!this.loginForm.invalid) {
 
+      const res = await this.userService.adminLogin(this.loginForm.value);
+      // console.log('resxx-', res);
+      if(res.status === 200){
+        if(res.data.data.roles[0] === 'ROLE_ADMIN'){
+
+          // console.log('data-login-', res.data);
+          sessionStorage.setItem("admin-data", JSON.stringify(res.data.data));
           let _html=`
                   <div class="c-green">
                     <div class="material-icons">task_alt</div>
-                    <h1>Login Success!</h1>
+                    <h1>Admin Login Success!</h1>
                   </div>`;
           this.openDialog(_html);
 
           this.loginForm.reset();
-          this.router.navigate(["my-account"]);
+          this.router.navigate(["/admin/dashboard"]);
         }else{
-          //-- Fail
           this.customError2.status = true;
-          this.customError2.message = data.message;
-          console.log('this.customError2--', this.customError2);
+          this.customError2.message = 'Require Admin Role!';
+          return;
         }
+
+      }else{
+        this.customError2.status = true;
+        this.customError2.message = res.data.message;
+        return;
+      }
     } else {
         //--Form input is not valid
         this.loginForm.markAllAsTouched(); //--Trigger validation across form
@@ -72,7 +75,6 @@ export class LoginComponent implements OnInit {
   }
 
   openDialog(_html) {
-    // console.log('_html-', _html);
     let dialogRef = this.dialog.open(DialogComponent, {
         data: {
           html: _html,

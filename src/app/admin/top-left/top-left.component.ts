@@ -2,18 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DialogComponent } from 'src/app/share/dialog/dialog.component';
+
 @Component({
-  selector: 'app-nav',
-  templateUrl: './nav.component.html',
-  styleUrls: ['./nav.component.scss']
+  selector: 'app-top-left',
+  templateUrl: './top-left.component.html',
+  styleUrls: ['./top-left.component.scss']
 })
-export class NavComponent implements OnInit {
+export class TopLeftComponent implements OnInit {
   menu = {main: false, child: false}
-  userData;
+  adminData;
   constructor(
     private router: Router,
-    public dialog: MatDialog,
-    ) { }
+    public dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
   }
@@ -41,22 +42,21 @@ export class NavComponent implements OnInit {
       dialogRef.close();
     }, 2000);
   }
-  logout(){
-    sessionStorage.removeItem("user-data");
+  adminLogout(){
+    sessionStorage.removeItem("admin-data");
     let _html=`
       <div class="c-red">
         <div class="material-icons">task_alt</div>
         <h1>Logout Success!</h1>
       </div>`;
     this.openDialog(_html);
-    this.router.navigate(["home"]);
+    this.router.navigate(["/admin/login"]);
   }
 
-  get user(){
-    if(sessionStorage.getItem("user-data")){
-      this.userData = JSON.parse(sessionStorage.getItem("user-data"));
+  get admin(){
+    if(sessionStorage.getItem("admin-data")){
+      this.adminData = JSON.parse(sessionStorage.getItem("admin-data"));
     }
-    return this.userData? this.userData: false;
+    return this.adminData? this.adminData: false;
   }
-
 }

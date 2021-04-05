@@ -5,26 +5,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ProductService } from 'src/app/share/product.service';
 import { environment } from 'src/environments/environment';
-
 import { IProduct } from 'src/app/models/IProduct';
-
-// IProduct
-// export interface IProduct {
-//   id: string;
-//   pName: string;
-//   pQty: number;
-//   pPrice: number;
-//   pPriceSale: number;
-//   pDesc: string;
-//   pSize: string;
-//   pColor: string;
-//   pStar: number;
-//   pImapImageDefaultges: string;
-//   pImages: string;
-//   pSpecification: string;
-//   createdAt: Date;
-//   updatedAt: Date;
-// }
+import { DialogComponent } from 'src/app/share/dialog/dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
@@ -34,14 +17,17 @@ export class ProductsComponent implements OnInit {
 
   imgPath: string = environment.image_path;
 
-  displayedColumns: string[] = ['id', 'pImapImageDefaultges', 'pName', 'pQty', 'pPrice', 'pPriceSale', 'createdAt'];
+  displayedColumns: string[] = ['id', 'pImapImageDefaultges', 'pName', 'pQty', 'pPrice', 'pPriceSale', 'createdAt', 'actions'];
   dataSource: MatTableDataSource<IProduct>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
+  Errors = {status:false, msg:''}
+
   constructor(
     private productService:ProductService,
+    public dialog: MatDialog,
   ) { }
 
   async ngOnInit(){
@@ -65,11 +51,6 @@ export class ProductsComponent implements OnInit {
     }
   }
 
-  // ngAfterViewInit() {
-  //   this.dataSource.paginator = this.paginator;
-  //   this.dataSource.sort = this.sort;
-  // }
-
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -79,4 +60,35 @@ export class ProductsComponent implements OnInit {
     }
   }
 
+  async delete(id){
+    console.log('delete');
+
+    //--must add confirm will update next
+
+    const res = await this.productService.delete(id);
+    if(res.status === 200){
+      let _html=`
+              <div class="c-green">
+                <div class="material-icons">task_alt</div>
+                <h1>Product Created Success!</h1>
+              </div>`;
+      this.openDialog(_html);
+
+      this.ngOnInit();
+    }else{
+      this.Errors.status = true;
+      this.Errors.msg = res.message;
+    }
+  }
+
+  openDialog(_html) {
+    let dialogRef = this.dialog.open(DialogComponent, {
+        data: {
+          html: _html,
+        }
+    });
+    setTimeout(() => {
+      dialogRef.close();
+    }, 2000);
+  }
 }

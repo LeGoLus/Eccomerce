@@ -7,10 +7,12 @@
         <a class="btn" routerLink="/admin/product-adedit">Create New</a>
     </div>
 
-    <mat-form-field>
-        <mat-label>Search</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. name" #input>
-    </mat-form-field>
+    <div class="search">
+        <mat-form-field>
+            <mat-label>Search</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Ex. text" #input>
+        </mat-form-field>
+    </div>
 
     <div class="mat-elevation-z8">
         <table mat-table [dataSource]="dataSource" matSort>
@@ -25,7 +27,7 @@
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Image </th>
                 <td mat-cell *matCellDef="let row">
                     <a routerLink="/admin/product-adedit/{{row.id}}">
-                        <img class="thumb" src="{{imgPath}}{{row.pImapImageDefaultges}}" alt="">
+                        <img class="thumb" src="{{imgPath}}{{row.pImageDefault}}" alt="">
                     </a>
                 </td>
             </ng-container>
@@ -64,12 +66,25 @@
                 <td mat-cell *matCellDef="let row"> {{row.createdAt | date:'YYYY-MM-dd'}} </td>
             </ng-container>
 
+            <!-- createAt -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions </th>
+                <td mat-cell *matCellDef="let row">
+                    <a class="action" routerLink="/admin/product-adedit/{{row.id}}">
+                        <i class="material-icons">mode_edit</i>
+                    </a>
+                    <a class="action" (click)="delete(row.id)">
+                        <i class="material-icons">delete_outline</i>
+                    </a>
+                </td>
+            </ng-container>
+
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
             <!-- Row shown when there is no matching data. -->
             <tr class="mat-row" *matNoDataRow>
-                <td class="mat-cell" colspan="7">No data matching the filter "{{input.value}}"</td>
+                <td class="mat-cell" colspan="8">No data matching the filter "{{input.value}}"</td>
             </tr>
         </table>
 

@@ -1,10 +1,14 @@
 <app-top-left></app-top-left>
 
 <div class="detail">
-    <form [formGroup]="form" class="mat-elevation-z8" enctype="multipart/form-data">
+    <!-- <form [formGroup]="myForm"> -->
+    <form [formGroup]="myForm" class="mat-elevation-z8" enctype="multipart/form-data">
+        <input type="hidden" formControlName="id">
 
         <div class="link-nav">
-            <a routerLink="/admin/products">Back</a>
+            <a routerLink="/admin/products">
+                <i class="material-icons">keyboard_backspace</i> Back
+            </a>
             <h1>Product</h1>
             <span *ngIf="!paramId">Create New</span> <span *ngIf="paramId">Edit</span>
         </div>
@@ -50,9 +54,25 @@
             </div>
 
             <div class="col-md-12">
-                <label>Images</label>
-                <input formControlName="pImages" type="file" name="images" accept="image/*" multiple>
-                <small class="error" *ngIf="f.pImages.invalid && (f.pImages.dirty || f.pImages.touched)">*Required</small>
+                <label>Images upload</label>
+                <input type="file" class="form-control" multiple (change)="selectMultiple($event)">
+                <!-- --render images befor upload -->
+                <img *ngFor='let url of images' [src]="url" height="150" width="200px" style="margin: 3px;"> <br/>
+                <ng-container *ngIf="ImageDefault">
+                    <hr>
+                    <label>Images Default</label><br/>
+                    <img class="image" src="{{ImageDefault}}" height="auto" width="300px" style="margin: 3px;"> <br/>
+                    <hr>
+                    <label>Images all</label><br/>
+                    <div class="img-wrap">
+                        <div *ngFor="let img of ImagesAll" class="img-main">
+                            <img class="image" (click)="changeImageDefault(img.name)" src="{{img.url}}" height="auto" width="300px" style="margin: 3px;">
+                            <a *ngIf="ImageDefault !== img.url" (click)="delimg(img)" class="del" title="delete iamge"><i class="material-icons">delete_outline</i></a>
+                        </div>
+                    </div>
+
+                </ng-container>
+
             </div>
 
             <div class="col-md-12">
@@ -69,7 +89,8 @@
 
 
             <div class="col-md-12 txt-center">
-                <button class="btn" (click)="submit()" [disabled]="this.form.invalid">Submit</button>
+                <button *ngIf="!paramId" class="btn" (click)="submit()" [disabled]="this.myForm.invalid">Submit</button>
+                <button *ngIf="paramId" class="btn" (click)="update()">Update</button>
             </div>
         </div>
     </form>

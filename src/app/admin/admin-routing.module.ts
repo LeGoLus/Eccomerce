@@ -12,12 +12,16 @@ import { ProductAdeditComponent } from './products/product-adedit/product-adedit
 import { ProductsComponent } from './products/products/products.component';
 import { UserAdeditComponent } from './users/user-adedit/user-adedit.component';
 import { UsersComponent } from './users/users/users.component';
+import { UploadsComponent } from './uploads/uploads.component';
+
+
 const routes: Routes = [
 
   { path: '',   redirectTo: 'login', pathMatch: 'full' }, // redirect to
   { path: 'login', component: LoginComponent},
 
   { path: 'dashboard', component: DashboardComponent, canActivate:[AuthGuard]},
+  { path: 'uploads', component: UploadsComponent, canActivate:[AuthGuard]},
 
   { path: 'admins', component: AdminAdeditComponent, canActivate:[AuthGuard] },
   { path: 'admin-adedit/:slug', component: AdminsComponent, canActivate:[AuthGuard] },

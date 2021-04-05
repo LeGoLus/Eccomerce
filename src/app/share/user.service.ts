@@ -71,6 +71,10 @@ export class UserService {
   //--update user by id
   //--delete user by id
 
+  getToken(){
+    return { headers: { 'x-access-token': this.getAdmin() }};
+  }
+
   getUser(){
     if(sessionStorage.getItem("user-data")){
       var user = JSON.parse(sessionStorage.getItem("user-data"));

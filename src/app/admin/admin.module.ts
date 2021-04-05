@@ -15,6 +15,7 @@ import { ProductsComponent } from './products/products/products.component';
 import { UserAdeditComponent } from './users/user-adedit/user-adedit.component';
 import { UsersComponent } from './users/users/users.component';
 import { TopLeftComponent } from './top-left/top-left.component';
+import { UploadsComponent } from './uploads/uploads.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { TopLeftComponent } from './top-left/top-left.component';
     PagenotfoundComponent,
     LoginComponent,
     TopLeftComponent,
+    UploadsComponent
   ],
   imports: [
     CommonModule,

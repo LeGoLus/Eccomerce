@@ -1,39 +1,33 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ProductService } from 'src/app/share/product.service';
-
+import { environment } from 'src/environments/environment';
 import { IProduct } from 'src/app/models/IProduct';
 
-// IProduct
-// export interface IProduct {
-//   id: string;
-//   pName: string;
-//   pSlug: string;
-//   pQty: number;
-//   pPrice: number;
-//   pPriceSale: number;
-//   pDesc: string;
-//   pSize: string;
-//   pColor: string;
-//   pStar: number;
-//   pImapImageDefaultges: string;
-//   pImages: string;
-//   pSpecification: string;
-//   createdAt: Date;
-//   updatedAt: Date;
-// }
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DialogComponent } from 'src/app/share/dialog/dialog.component';
 @Component({
   selector: 'app-product-adedit',
   templateUrl: './product-adedit.component.html',
   styleUrls: ['./product-adedit.component.scss']
 })
 export class ProductAdeditComponent implements OnInit {
-  product;
+  data;
   paramId :any = 0;
   Errors = {status:false, msg:''}
-  form: FormGroup;
+  myForm: FormGroup;
+
+  images = []; //--for render show
+  multipleImages = []; //--for send to server
+
+  //--for edit data
+  imagePath: string = environment.image_path;
+  ImageDefault;
+  ImagesAll = [];
+
+  mySubscription: any;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -41,8 +35,19 @@ export class ProductAdeditComponent implements OnInit {
     private productService:ProductService,
     public dialog: MatDialog,
   ) {
+    //--for reload componant
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.mySubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        // Trick the Router into believing it's last link wasn't previously loaded
+        this.router.navigated = false;
+      }
+    });
+    //--end for reload componant
 
-    this.form = this.fb.group({
+    //--init form
+    this.myForm = this.fb.group({
+      id:[''],
       pName: ['', Validators.required],
       pSlug: ['', Validators.required],
       pQty: ['', Validators.required],
@@ -51,7 +56,8 @@ export class ProductAdeditComponent implements OnInit {
       pDesc: ['', Validators.required],
       pSize: ['', Validators.required],
       pColor: ['', Validators.required],
-      pImages: ['', Validators.required],
+      pImageDefault: [''],
+      pImages: [''],
       pSpecification: ['', Validators.required],
     });
 
@@ -66,26 +72,192 @@ export class ProductAdeditComponent implements OnInit {
     if(this.paramId  && this.paramId  > 0){
       this.getOne(this.paramId);
     }
-
   }
 
-  get f() { return this.form.controls; }
+  // ngOnDestroy() {
+  //   if (this.mySubscription) {
+  //     this.mySubscription.unsubscribe();
+  //   }
+  // }
+
+  get f() { return this.myForm.controls; }
 
   async getOne(id){
     console.log('getOne');
-    const data = await this.productService.getOne(id);
+    const res = await this.productService.getOne(id);
 
-    if(data.status === 2000){
-      this.product = data.data;
+    if(res.status === 200){
+      this.data = res.data.data;
+      console.log('data->>', this.data);
+      this.updateProfile();
     }else{
       this.Errors.status = true;
-      this.Errors.msg = data.message;
+      this.Errors.msg = res.message;
     }
 
     console.log('Errors--', this.Errors);
   }
 
-  submit(){
+  updateProfile() {
+    //--add all value to input form
+    this.myForm.patchValue({
+      id: this.data.id,
+      pName: this.data.pName,
+      pSlug: this.data.pSlug,
+      pQty: this.data.pQty,
+      pPrice: this.data.pPrice,
+      pPriceSale: this.data.pPriceSale,
+      pDesc: this.data.pDesc,
+      pSize: this.data.pSize,
+      pColor: this.data.pColor,
+
+      pImageDefault: this.data.pImageDefault,
+      pImages: this.data.pImages,
+
+      pSpecification: this.data.pSpecification,
+    });
+    this.ImageDefault = this.imagePath + this.data.pImageDefault;
+
+    let tmp_images = this.data.pImages.split(',');
+    if(tmp_images){
+      tmp_images.forEach( (value, index) => {
+        this.ImagesAll.push({name: value, url: this.imagePath + value});
+      });
+    }
+
+    console.log(`tmp_images-`, tmp_images);
+    console.log(`this.ImagesAll-`, this.ImagesAll);
+  }
+
+  changeImageDefault(img){
+    this.ImageDefault = this.imagePath + img;
+    this.myForm.patchValue({pImageDefault: img}); //--update value for update
+  }
+
+  selectMultiple(event){
+    if( event.target.files.length > 0){
+
+      //--for send to server
+      this.multipleImages = event.target.files;
+
+      //--for render show
+      var filesAmount = event.target.files.length;
+      this.images = []; //--clear images preview render
+
+      for (let i = 0; i < filesAmount; i++) {
+              var reader = new FileReader();
+              reader.onload = (event:any) => {
+                // console.log(event.target.result);
+                this.images.push(event.target.result);
+              }
+              reader.readAsDataURL(event.target.files[i]);
+      }
+      //--end for render show
+
+    }
+    console.log('this.multipleImages-', this.multipleImages);
+  }
+
+
+  openDialog(_html) {
+    let dialogRef = this.dialog.open(DialogComponent, {
+        data: {
+          html: _html,
+        }
+    });
+    setTimeout(() => {
+      dialogRef.close();
+    }, 2000);
+  }
+
+  async submit(){
+    const formData = new FormData();
+    //--form
+    const formInput = this.myForm.value;
+    console.log('formInput-', formInput);
+    for (const key in formInput) {
+      if (formInput.hasOwnProperty(key)) {
+        const element = formInput[key];
+        formData.append(key, element);
+      }
+    }
+    //--images
+    for( let img of this.multipleImages){
+      formData.append('images', img);
+    }
+    console.log('this.multipleImages-', this.multipleImages);
+    // return;
+    // --create
+    const res = await this.productService.create(formData);
+    if(res.status === 200){
+      let _html=`
+              <div class="c-green">
+                <div class="material-icons">task_alt</div>
+                <h1>Product Created Success!</h1>
+              </div>`;
+      this.openDialog(_html);
+      this.router.navigate([`/admin/products`]);
+    }else{
+      this.Errors.status = true;
+      this.Errors.msg = res.message;
+    }
+
+  }
+
+  async update(){
+    const formData = new FormData();
+    //--form
+    const formInput = this.myForm.value;
+    console.log('formInput-', formInput);
+    for (const key in formInput) {
+      if (formInput.hasOwnProperty(key)) {
+        const element = formInput[key];
+        formData.append(key, element); //--add all input field to formData
+      }
+    }
+    //--images
+    for( let img of this.multipleImages){
+      formData.append('images', img); //--case add more image
+    }
+    console.log('this.multipleImages-', this.multipleImages);
+    // return;
+
+    //--update
+    const res = await this.productService.update(formData, formInput.id);
+    if(res.status === 200){
+      let _html=`
+              <div class="c-green">
+                <div class="material-icons">task_alt</div>
+                <h1>Product Update Success!</h1>
+              </div>`;
+      this.openDialog(_html);
+      // this.router.navigate([`/admin/product-adedit/${formInput.id}`]);
+
+      this.router.navigateByUrl(`/admin/product-adedit/${formInput.id}`);
+    }else{
+      this.Errors.status = true;
+      this.Errors.msg = res.message;
+    }
+
+  }
+
+  async delimg(img){
+
+    const res = await this.productService.deleteImage(img, this.paramId);
+    if(res.status === 200){
+      let _html=`
+              <div class="c-green">
+                <div class="material-icons">task_alt</div>
+                <h1>Delete image Success!</h1>
+              </div>`;
+      this.openDialog(_html);
+      this.router.navigate([`/admin/product-adedit/${this.paramId}`]);
+      // this.router.navigateByUrl(`/admin/product-adedit/${this.paramId}`);
+    }else{
+      this.Errors.status = true;
+      this.Errors.msg = res.message;
+    }
+
 
   }
 

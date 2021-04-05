@@ -7,10 +7,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FrontRoutingModule } from './front/front-routing.module';
 import { AdminRoutingModule } from './admin/admin-routing.module';
 import { MaterialModule } from './share/material-module';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -18,7 +19,8 @@ import { MaterialModule } from './share/material-module';
     FrontRoutingModule,
     AdminRoutingModule,
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

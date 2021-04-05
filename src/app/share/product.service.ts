@@ -12,26 +12,9 @@ export class ProductService {
   apiURL: string = environment.api_url;
   constructor(
     private userService:UserService,
-  ) {
-
-  }
+  ) {}
 
   //--get all user
-  // async getAll(type='user'){
-  //   try {
-  //     let _headers = {
-  //       headers: { 'x-access-token': (type === 'user') ? this.userService.getUser() : this.userService.getAdmin() }
-  //     }
-  //     console.log('_headers-', _headers);
-  //     // // const res = await axios.get(`${this.apiURL}/api/product`);
-  //     const res = await axios.get(`${this.apiURL}/api/product`, _headers);
-  //     console.log('res.data-', res.data);
-  //     return res.data;
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
   async getAll(){
     try {
       const res = await axios.get(`${this.apiURL}/api/product`);
@@ -45,8 +28,91 @@ export class ProductService {
   async getOne(id=0){
     try {
       const res = await axios.get(`${this.apiURL}/api/product/${id}`);
-      console.log('res.data-', res.data);
+      // console.log('res.data-', res);
+      return res;
+    } catch (error) {
+      // console.error(error);
+      console.log(error);
+    }
+  }
+
+
+  async uploadMulti(payload){
+    try {
+      let _header = this.userService.getToken()
+      const res = await axios.post(`${this.apiURL}/uploadmultiple`, payload);
+      console.log('res-', res);
       return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async create(payload){
+    try {
+      const res = await axios({
+          method: "post",
+          url: `${this.apiURL}/api/product`,
+          data: payload,
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "x-access-token": this.userService.getAdmin()
+          }
+      });
+
+      // console.log('res-', res);
+      return res;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async update(payload, id){
+    console.log('payload-', payload);
+    // return;
+
+    try {
+      const res = await axios({
+          method: "put",
+          url: `${this.apiURL}/api/product/${id}`,
+          data: payload,
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "x-access-token": this.userService.getAdmin()
+          }
+      });
+
+      // console.log('res-', res);
+      return res;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async deleteImage(img, id){
+      try {
+        const res = await axios({
+          method: "get",
+          url: `${this.apiURL}/api/product/image/${id}/${img.name}`,
+          headers: { "x-access-token": this.userService.getAdmin() }
+        });
+        console.log('res-', res);
+        return res;
+      } catch (error) {
+        // console.error(error);
+        console.log(error);
+      }
+  }
+
+  async delete(id){
+    try {
+      const res = await axios({
+        method: "delete",
+        url: `${this.apiURL}/api/product/${id}`,
+        headers: { "x-access-token": this.userService.getAdmin() }
+      });
+      console.log('res-', res);
+      return res;
     } catch (error) {
       // console.error(error);
       console.log(error);

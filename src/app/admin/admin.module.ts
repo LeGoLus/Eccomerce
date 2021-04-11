@@ -16,6 +16,8 @@ import { UserAdeditComponent } from './users/user-adedit/user-adedit.component';
 import { UsersComponent } from './users/users/users.component';
 import { TopLeftComponent } from './top-left/top-left.component';
 import { UploadsComponent } from './uploads/uploads.component';
+import { CategoriesComponent } from './categories/categories/categories.component';
+import { CategoryAdeditComponent } from './categories/category-adedit/category-adedit.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,9 @@ import { UploadsComponent } from './uploads/uploads.component';
     PagenotfoundComponent,
     LoginComponent,
     TopLeftComponent,
-    UploadsComponent
+    UploadsComponent,
+    CategoriesComponent,
+    CategoryAdeditComponent
   ],
   imports: [
     CommonModule,

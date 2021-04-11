@@ -4,7 +4,7 @@
 
     <div class="link-nav">
         <span>&nbsp;</span>
-        <a class="btn" routerLink="/admin/product-adedit">Create New</a>
+        <a class="btn" routerLink="/admin/category-adedit">Create New</a>
     </div>
 
     <div class="search">
@@ -22,60 +22,28 @@
                 <td mat-cell *matCellDef="let row; let i = index;">{{i+1}} </td>
             </ng-container>
 
-            <!-- pImapImageDefaultges -->
-            <ng-container matColumnDef="pImapImageDefaultges">
+            <!-- Image -->
+            <ng-container matColumnDef="cImage">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Image </th>
                 <td mat-cell *matCellDef="let row">
-                    <a routerLink="/admin/product-adedit/{{row.id}}">
-                        <img class="thumb" src="{{imgPath}}{{row.pImageDefault}}" alt="">
+                    <a routerLink="/admin/category-adedit/{{row.id}}">
+                        <img class="thumb" src="{{imgPath}}{{row.cImage}}" alt="">
                     </a>
                 </td>
             </ng-container>
 
-            <!-- pCategory -->
-            <ng-container matColumnDef="pCategory">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Category </th>
-                <td mat-cell *matCellDef="let row">
-                    {{this.categories[row.pCategory]}}
-                </td>
-            </ng-container>
-
-            <!-- pStatus -->
-            <ng-container matColumnDef="pStatus">
+            <!-- Status -->
+            <ng-container matColumnDef="cStatus">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Public </th>
                 <td mat-cell *matCellDef="let row">
-                    <mat-slide-toggle [checked]="row.pStatus" (change)="onToggle($event, row.id)"></mat-slide-toggle>
+                    <mat-slide-toggle [checked]="row.cStatus" (change)="onToggle($event, row.id)"></mat-slide-toggle>
                 </td>
             </ng-container>
 
-
-
-            <!-- pName -->
-            <ng-container matColumnDef="pName">
+            <!-- Name -->
+            <ng-container matColumnDef="cName">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-                <td mat-cell *matCellDef="let row"> {{row.pName}} </td>
-            </ng-container>
-
-            <!-- pQty -->
-            <ng-container matColumnDef="pQty">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Qty </th>
-                <td mat-cell *matCellDef="let row"> {{row.pQty | number}} </td>
-            </ng-container>
-
-            <!-- pPrice -->
-            <ng-container matColumnDef="pPrice">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Price </th>
-                <td mat-cell *matCellDef="let row">
-                    {{row.pPrice | number}}
-                </td>
-            </ng-container>
-
-            <!-- pPriceSale -->
-            <ng-container matColumnDef="pPriceSale">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Sale Price </th>
-                <td mat-cell *matCellDef="let row">
-                    {{row.pPriceSale | number}}
-                </td>
+                <td mat-cell *matCellDef="let row"> {{row.cName}} </td>
             </ng-container>
 
             <!-- createAt -->
@@ -88,12 +56,9 @@
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions </th>
                 <td mat-cell *matCellDef="let row">
-                    <a class="action" routerLink="/admin/product-adedit/{{row.id}}">
+                    <a class="action" routerLink="/admin/category-adedit/{{row.id}}">
                         <i class="material-icons">mode_edit</i>
                     </a>
-                    <!-- <a class="action" (click)="delete(row.id)">
-                        <i class="material-icons">delete_outline</i>
-                    </a> -->
                     <a class="action" (click)="confirmDialog(row.id)">
                         <i class="material-icons">delete_outline</i>
                     </a>
@@ -106,7 +71,7 @@
 
             <!-- Row shown when there is no matching data. -->
             <tr class="mat-row" *matNoDataRow>
-                <td class="mat-cell" colspan="8">No data matching the filter "{{input.value}}"</td>
+                <td class="mat-cell" colspan="6">No data matching the filter "{{input.value}}"</td>
             </tr>
         </table>
 

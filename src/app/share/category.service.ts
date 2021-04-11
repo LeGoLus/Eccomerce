@@ -8,9 +8,9 @@ import axios from "src/utils/axios"
 @Injectable({
   providedIn: 'root'
 })
-export class ProductService {
+export class CategoryService {
   apiURL: string = environment.api_url;
-  apiPath = 'product';
+  apiPath = 'category';
 
   constructor(
     private userService:UserService,
@@ -91,20 +91,20 @@ export class ProductService {
     }
   }
 
-  async deleteImage(img, id){
-      try {
-        const res = await axios({
-          method: "get",
-          url: `${this.apiURL}/api/${this.apiPath}/image/${id}/${img.name}`,
-          headers: { "x-access-token": this.userService.getAdmin() }
-        });
-        console.log('res-', res);
-        return res;
-      } catch (error) {
-        // console.error(error);
-        console.log(error);
-      }
-  }
+  // async deleteImage(img, id){
+  //     try {
+  //       const res = await axios({
+  //         method: "get",
+  //         url: `${this.apiURL}/api/${this.apiPath}/image/${id}/${img.name}`,
+  //         headers: { "x-access-token": this.userService.getAdmin() }
+  //       });
+  //       console.log('res-', res);
+  //       return res;
+  //     } catch (error) {
+  //       // console.error(error);
+  //       console.log(error);
+  //     }
+  // }
 
   async updateStatus(status, id){
     try {

@@ -1,20 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { ProductService } from 'src/app/share/product.service';
+import { CategoryService } from 'src/app/share/category.service';
 import { environment } from 'src/environments/environment';
-import { IProduct } from 'src/app/models/IProduct';
 
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogComponent } from 'src/app/share/dialog/dialog.component';
-import { CategoryService } from 'src/app/share/category.service';
-
 @Component({
-  selector: 'app-product-adedit',
-  templateUrl: './product-adedit.component.html',
-  styleUrls: ['./product-adedit.component.scss']
+  selector: 'app-category-adedit',
+  templateUrl: './category-adedit.component.html',
+  styleUrls: ['./category-adedit.component.scss']
 })
-export class ProductAdeditComponent implements OnInit {
+export class CategoryAdeditComponent implements OnInit {
   data;
   paramId :any = 0;
   Errors = {status:false, msg:''}
@@ -23,20 +20,16 @@ export class ProductAdeditComponent implements OnInit {
   images = []; //--for render show
   multipleImages = []; //--for send to server
 
-  categories = [];
-
   //--for edit data
   imagePath: string = environment.image_path;
   ImageDefault;
   ImagesAll = [];
 
   mySubscription: any;
-
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private actRoute: ActivatedRoute,
-    private productService:ProductService,
     private categoryService:CategoryService,
     public dialog: MatDialog,
   ) {
@@ -53,21 +46,12 @@ export class ProductAdeditComponent implements OnInit {
     //--init form
     this.myForm = this.fb.group({
       id:[''],
-      pName: ['', Validators.required],
-      pSlug: ['', Validators.required],
-      pStatus: [''],
-      pCategory: ['', Validators.required],
-      pQty: ['', Validators.required],
-      pPrice: ['', Validators.required],
-      pPriceSale: ['', Validators.required],
-      pDesc: ['', Validators.required],
-      pSize: ['', Validators.required],
-      pColor: ['', Validators.required],
-      pImageDefault: [''],
-      pImages: [''],
-      pSpecification: ['', Validators.required],
+      cName: ['', Validators.required],
+      cSlug: ['', Validators.required],
+      cStatus: [''],
+      cDesc: ['', Validators.required],
+      cImage: [''],
     });
-
   }
 
   ngOnInit(): void {
@@ -79,17 +63,13 @@ export class ProductAdeditComponent implements OnInit {
     if(this.paramId  && this.paramId  > 0){
       this.getOne(this.paramId);
     }
-
-    this.getCategories();
   }
-
-
 
   get f() { return this.myForm.controls; }
 
   async getOne(id){
     console.log('getOne');
-    const res = await this.productService.getOne(id);
+    const res = await this.categoryService.getOne(id);
 
     if(res.status === 200){
       this.data = res.data.data;
@@ -103,57 +83,17 @@ export class ProductAdeditComponent implements OnInit {
     console.log('Errors--', this.Errors);
   }
 
-  async getCategories(){
-    console.log('getCategories');
-    const obj = await this.categoryService.getAll();
-
-    if(obj){
-      // console.log('obj->>', obj.data);
-      obj.data.forEach(element => {
-        // console.log('element->>', element);
-        this.categories.push({id: element.id, name: element.cName});
-      });
-
-      console.log('this.categories->>', this.categories);
-    }
-  }
-
   updateProfile() {
     //--add all value to input form
     this.myForm.patchValue({
       id: this.data.id,
-      pName: this.data.pName,
-      pSlug: this.data.pSlug,
-      pStatus: this.data.pStatus,
-      pCategory: this.data.pCategory,
-      pQty: this.data.pQty,
-      pPrice: this.data.pPrice,
-      pPriceSale: this.data.pPriceSale,
-      pDesc: this.data.pDesc,
-      pSize: this.data.pSize,
-      pColor: this.data.pColor,
-
-      pImageDefault: this.data.pImageDefault,
-      pImages: this.data.pImages,
-
-      pSpecification: this.data.pSpecification,
+      cName: this.data.cName,
+      cSlug: this.data.cSlug,
+      cStatus: this.data.cStatus,
+      cDesc: this.data.cDesc,
+      cImage: this.data.cImage,
     });
-    this.ImageDefault = this.imagePath + this.data.pImageDefault;
-
-    let tmp_images = this.data.pImages.split(',');
-    if(tmp_images){
-      tmp_images.forEach( (value, index) => {
-        this.ImagesAll.push({name: value, url: this.imagePath + value});
-      });
-    }
-
-    console.log(`tmp_images-`, tmp_images);
-    console.log(`this.ImagesAll-`, this.ImagesAll);
-  }
-
-  changeImageDefault(img){
-    this.ImageDefault = this.imagePath + img;
-    this.myForm.patchValue({pImageDefault: img}); //--update value for update
+    this.ImageDefault = this.imagePath + this.data.cImage;
   }
 
   selectMultiple(event){
@@ -210,15 +150,15 @@ export class ProductAdeditComponent implements OnInit {
     console.log('this.multipleImages-', this.multipleImages);
     // return;
     // --create
-    const res = await this.productService.create(formData);
+    const res = await this.categoryService.create(formData);
     if(res.status === 200){
       let _html=`
               <div class="c-green">
                 <div class="material-icons">task_alt</div>
-                <h1>Product Created Success!</h1>
+                <h1>Category Created Success!</h1>
               </div>`;
       this.openDialog(_html);
-      this.router.navigate([`/admin/products`]);
+      this.router.navigate([`/admin/categories`]);
     }else{
       this.Errors.status = true;
       this.Errors.msg = res.message;
@@ -230,7 +170,7 @@ export class ProductAdeditComponent implements OnInit {
     const formData = new FormData();
     //--form
     const formInput = this.myForm.value;
-    // console.log('formInput-', formInput);
+    console.log('formInput-', formInput);
     for (const key in formInput) {
       if (formInput.hasOwnProperty(key)) {
         const element = formInput[key];
@@ -238,24 +178,24 @@ export class ProductAdeditComponent implements OnInit {
       }
     }
     //--images
-    for( let img of this.multipleImages){
-      formData.append('images', img); //--case add more image
+    if(this.multipleImages.length>0){
+      for( let img of this.multipleImages){
+        formData.append('images', img); //--case add new image
+      }
+      console.log('this.multipleImages-', this.multipleImages);
     }
-    console.log('this.multipleImages-', this.multipleImages);
     // return;
 
     //--update
-    const res = await this.productService.update(formData, formInput.id);
+    const res = await this.categoryService.update(formData, formInput.id);
     if(res.status === 200){
       let _html=`
               <div class="c-green">
                 <div class="material-icons">task_alt</div>
-                <h1>Product Update Success!</h1>
+                <h1>Category Update Success!</h1>
               </div>`;
       this.openDialog(_html);
-      // this.router.navigate([`/admin/product-adedit/${formInput.id}`]);
-
-      this.router.navigateByUrl(`/admin/product-adedit/${formInput.id}`);
+      this.router.navigate([`/admin/category-adedit/${formInput.id}`]);
     }else{
       this.Errors.status = true;
       this.Errors.msg = res.message;
@@ -263,24 +203,21 @@ export class ProductAdeditComponent implements OnInit {
 
   }
 
-  async delimg(img){
+  // async delimg(img){
 
-    const res = await this.productService.deleteImage(img, this.paramId);
-    if(res.status === 200){
-      let _html=`
-              <div class="c-green">
-                <div class="material-icons">task_alt</div>
-                <h1>Delete image Success!</h1>
-              </div>`;
-      this.openDialog(_html);
-      this.router.navigate([`/admin/product-adedit/${this.paramId}`]);
-      // this.router.navigateByUrl(`/admin/product-adedit/${this.paramId}`);
-    }else{
-      this.Errors.status = true;
-      this.Errors.msg = res.message;
-    }
-
-
-  }
+  //   const res = await this.categoryService.deleteImage(img, this.paramId);
+  //   if(res.status === 200){
+  //     let _html=`
+  //             <div class="c-green">
+  //               <div class="material-icons">task_alt</div>
+  //               <h1>Delete image Success!</h1>
+  //             </div>`;
+  //     this.openDialog(_html);
+  //     this.router.navigate([`/admin/category-adedit/${this.paramId}`]);
+  //   }else{
+  //     this.Errors.status = true;
+  //     this.Errors.msg = res.message;
+  //   }
+  // }
 
 }

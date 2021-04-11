@@ -2,6 +2,8 @@ export interface IProduct {
   id: string;
   pName: string;
   pSlug: string;
+  pStatus: boolean;
+  pCategory: number;
   pQty: number;
   pPrice: number;
   pPriceSale: number;

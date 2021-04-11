@@ -10,6 +10,8 @@ import { LoginComponent } from './login/login/login.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound/pagenotfound.component';
 import { ProductAdeditComponent } from './products/product-adedit/product-adedit.component';
 import { ProductsComponent } from './products/products/products.component';
+import { CategoriesComponent } from './categories/categories/categories.component';
+import { CategoryAdeditComponent } from './categories/category-adedit/category-adedit.component';
 import { UserAdeditComponent } from './users/user-adedit/user-adedit.component';
 import { UsersComponent } from './users/users/users.component';
 import { UploadsComponent } from './uploads/uploads.component';
@@ -28,6 +30,10 @@ const routes: Routes = [
 
   { path: 'banners', component: BannersComponent, canActivate:[AuthGuard] },
   { path: 'banner-adedit/:slug', component: BannerAdeditComponent, canActivate:[AuthGuard] },
+
+  { path: 'categories', component: CategoriesComponent, canActivate:[AuthGuard] },
+  { path: 'category-adedit', component: CategoryAdeditComponent, canActivate:[AuthGuard] },
+  { path: 'category-adedit/:id', component: CategoryAdeditComponent, canActivate:[AuthGuard] },
 
   { path: 'products', component: ProductsComponent, canActivate:[AuthGuard] },
   { path: 'product-adedit', component: ProductAdeditComponent, canActivate:[AuthGuard] },
